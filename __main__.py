@@ -54,4 +54,28 @@ from transformers import pipeline
 
 summarizer=pipeline("summarization", model="Falconsai/text_summarization")
 
-print(summarizer(abccontent, max_length=1900, min_length=30, do_sample=False))
+#print(summarizer(abccontent, max_length=1900, min_length=30, do_sample=False))
+
+texto_ar=[
+    """El PP no suelta la presa sobre la esposa del presidente del Gobierno, Pedro Sánchez, por las reuniones que mantuvo con la matriz de Air Europa unos días antes de que la aerolínea fuera rescatada con dinero público en 2020. El líder popular, Alberto Núñez Feijóo, avisó este miércoles a Sánchez de queel PP impulsará una "investigación específica" sobre los vínculos Begoña Gómez con esa empresa y su supuesta intermediación para el rescate, una investigación que será "parlamentaria" pero que, amenazó Feijóo, puede terminar llegando a los tribunales si el presidente no ofrece explicaciones.""", 
+
+    """En una intervención con un tono algo más sosegado que en las últimas semanas, Feijóo aseguró que Sánchez que "se equivoca" si cree que ha "resuelto las dudas de lo que ha pasado en su Gobierno y en su partido", una referencia muy poco velada a la conocida como trama Koldo, que se habría beneficiado de mordidas en la compra de mascarillas durante la pandemia. Al líder del PP también le genera dudas "lo que ha pasado" en la "casa" del presidente, en referencia a la esposa de Sánchez, a quien no llamó por su nombre.""",
+
+    """"Se equivoca si cree que ha dado carpetazo" a ese asunto, espetó Feijóo, que prometió que si el presidente "vuelve a negarse a dar explicaciones" impulsará "una investigación específica sobre los asuntos que le afectan a su entorno más inmediato". "Parlamentaria seguro, y judicial también, si es necesaria", espetó el líder del PP. En respuesta, Sánchez ironizó con la "paciencia" que, dijo, tiene que tener para responder semanalmente a las mismas preguntas, y exigió a Feijóo que "plante cara a la corrupción" en el PP y "exija la dimisión a la señora [Isabel Díaz] Ayuso como presidenta de la Comunidad de Madrid" por las informaciones sobre el fraude fiscal que habría cometido su pareja."""
+          ]
+
+es_en_translator = pipeline("translation", model="Helsinki-NLP/opus-mt-es-en")
+en_es_translator = pipeline("translation", model="Helsinki-NLP/opus-mt-en-es")
+summ=[]
+
+for e in texto_ar:
+
+    summ.append(summarizer(es_en_translator(e)[0]['translation_text'], max_length=100, min_length=70, do_sample=False)[0]['summary_text'])
+
+resumen=""
+for e in summ:
+    resumen+=en_es_translator(e)[0]['translation_text']+"\n\n"
+
+# Summarize the text, attempting to target around 5 lines.
+# Note: Adjust 'max_length' and 'min_length' as needed to get closer to your desired output size.
+print(resumen)
