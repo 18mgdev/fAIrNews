@@ -59,11 +59,21 @@ model = EncoderDecoderModel.from_pretrained(ckpt).to(device)
 
 def generate_summary(text):
 
-   inputs = tokenizer([text], padding="max_length", truncation=True, max_length=512, return_tensors="pt")
+   inputs = tokenizer([text], padding="max_length", truncation=True, max_length=100, return_tensors="pt")
    input_ids = inputs.input_ids.to(device)
    attention_mask = inputs.attention_mask.to(device)
    output = model.generate(input_ids, attention_mask=attention_mask)
    return tokenizer.decode(output[0], skip_special_tokens=True)
 
+texto_ar=[
+    """El PP no suelta la presa sobre la esposa del presidente del Gobierno, Pedro Sánchez, por las reuniones que mantuvo con la matriz de Air Europa unos días antes de que la aerolínea fuera rescatada con dinero público en 2020. El líder popular, Alberto Núñez Feijóo, avisó este miércoles a Sánchez de que el PP impulsará una "investigación específica" sobre los vínculos Begoña Gómez con esa empresa y su supuesta intermediación para el rescate, una investigación que será "parlamentaria" pero que, amenazó Feijóo, puede terminar llegando a los tribunales si el presidente no ofrece explicaciones.""", 
 
-print(generate_summary(abccontent))
+    """En una intervención con un tono algo más sosegado que en las últimas semanas, Feijóo aseguró que Sánchez que "se equivoca" si cree que ha "resuelto las dudas de lo que ha pasado en su Gobierno y en su partido", una referencia muy poco velada a la conocida como trama Koldo, que se habría beneficiado de mordidas en la compra de mascarillas durante la pandemia. Al líder del PP también le genera dudas "lo que ha pasado" en la "casa" del presidente, en referencia a la esposa de Sánchez, a quien no llamó por su nombre.""",
+
+    """"Se equivoca si cree que ha dado carpetazo" a ese asunto, espetó Feijóo, que prometió que si el presidente "vuelve a negarse a dar explicaciones" impulsará "una investigación específica sobre los asuntos que le afectan a su entorno más inmediato". "Parlamentaria seguro, y judicial también, si es necesaria", espetó el líder del PP. En respuesta, Sánchez ironizó con la "paciencia" que, dijo, tiene que tener para responder semanalmente a las mismas preguntas, y exigió a Feijóo que "plante cara a la corrupción" en el PP y "exija la dimisión a la señora [Isabel Díaz] Ayuso como presidenta de la Comunidad de Madrid" por las informaciones sobre el fraude fiscal que habría cometido su pareja."""
+          ]
+
+for e in texto_ar:
+    print(generate_summary(e))
+
+
