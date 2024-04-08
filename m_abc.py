@@ -12,5 +12,5 @@ def get_news_list():
     """
     items = r2j.get_JSON(RSS_URL)["items"]
     for e in items:
-        e["content"]=f.html_to_text(e["description"])
+        e["content"]=f.clean_html(e["description"])
     return items
