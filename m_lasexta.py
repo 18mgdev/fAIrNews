@@ -2,7 +2,7 @@ import functions as f
 import api_rss2json as r2j
 
 RSS_URL="https://www.lasexta.com/rss/351410.xml"
-
+NAME="LaSexta"
 #
 
 def get_news_list():
@@ -11,5 +11,7 @@ def get_news_list():
     """
     items = r2j.get_JSON(RSS_URL)["items"]
     for e in items:
+        e["medio"]=NAME
+        e["title"]=f.clean_html(e["title"])
         e["content"]=f.clean_html(e["content"])
     return items

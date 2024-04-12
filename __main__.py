@@ -1,36 +1,31 @@
-from newsapi import NewsApiClient, const
+import m_20minutos, m_abc, m_cope, m_elconfidencial, m_lasexta
+import sm_elcorreo, sm_elmundo,sm_elpais,sm_elperiodico,sm_lavanguardia,sm_lavozdegalicia
 
-api = NewsApiClient(api_key='c1d834f6006a48fd8ee6886dbf7cc40a')
+all_items = []
+for e in m_20minutos.get_news_list():
+    all_items.append(e)
+for e in m_abc.get_news_list():
+    all_items.append(e)
+for e in m_cope.get_news_list():
+    all_items.append(e)
+for e in m_elconfidencial.get_news_list():
+    all_items.append(e)
+for e in m_lasexta.get_news_list():
+    all_items.append(e)
 
-all_items = api.get_everything(language='es', q="decapita", sort_by="publishedAt")['articles']
-#print(api.get_sources(language='es'))
-print(len(all_items))
-for e in all_items:
-    print(e["publishedAt"],e["source"]["name"]+": "+e["title"])
+for e in sm_elcorreo.get_news_list():
+    all_items.append(e)
+for e in sm_elmundo.get_news_list():
+    all_items.append(e)
+for e in sm_elpais.get_news_list():
+    all_items.append(e)
+for e in sm_elperiodico.get_news_list():
+    all_items.append(e)
+for e in sm_lavanguardia.get_news_list():
+    all_items.append(e)
+for e in sm_lavozdegalicia.get_news_list():
+    all_items.append(e)
 
-import spacy
-import math
-
-# Suponemos que se carga el modelo en español
-nlp = spacy.load("es_core_news_sm")
-
-def summarize_article(text):
-    # Procesar el texto con el modelo NLP
-    doc = nlp(text)
-    
-    # Identificar y priorizar oraciones basadas en entidades nombradas y otros criterios
-    sentences = list(doc.sents)
-    ranked_sentences = sorted(sentences, key=lambda s: len(s.ents), reverse=True)
-    
-    num_sentences = min(num_sentences, len(ranked_sentences))
-    num_sentences=math.ceil(len(ranked_sentences)/3) #divide entre 3 y redondea hacia arriba
-
-    # Compilar el resumen basado en las oraciones mejor clasificadas
-    summary = " ".join([str(sentence) for sentence in ranked_sentences[:num_sentences]])
-    
-    return summary
-
-#print(summarize_article(text))
 
 #****************EXTRAER TOPICS
 
@@ -39,7 +34,6 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from gensim import corpora, models
-import re
 
 nltk.download('punkt')
 nltk.download('stopwords')
@@ -70,10 +64,8 @@ def extract_topics(news_list, num_topics=5):
 # Lista de noticias
 news_list = []
 for e in all_items:
-    if str(e["content"]).__contains__("terrorista"):
-        print("si")
-    news_list.append(e["content"])
-print(len(news_list))
+    news_list.append(e["title"])
+
 
 # Extraer los temas
 extract_topics(news_list)
