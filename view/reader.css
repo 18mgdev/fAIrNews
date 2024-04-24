@@ -1,0 +1,27 @@
+.reader{
+    position: absolute;
+    height: 50vh;
+    background-color: #f5f5f5;
+    
+    width: 100%;
+}
+
+#volver{
+    z-index: 2;
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 10%;
+    height: 50px;
+    border: #fff 1px solid;
+    text-align: center;
+    line-height: 50px;
+    font-size: 20px;
+    color: #fff;
+    cursor: pointer;
+    text-decoration: none;
+}
+#volver:hover{
+    background-color: #8f94fb;
+    color: #000;
+}
