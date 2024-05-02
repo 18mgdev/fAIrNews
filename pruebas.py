@@ -1,124 +1,48 @@
-import m_20minutos, m_abc, m_cope, m_elconfidencial, m_lasexta
-import sm_elcorreo, sm_elmundo,sm_elpais,sm_elperiodico,sm_lavanguardia,sm_lavozdegalicia
-all_items = []
-for e in m_20minutos.get_news_list():
-    all_items.append(e)
-for e in m_abc.get_news_list():
-    all_items.append(e)
-for e in m_cope.get_news_list():
-    all_items.append(e)
-for e in m_elconfidencial.get_news_list():
-    all_items.append(e)
-for e in m_lasexta.get_news_list():
-    all_items.append(e)
-for e in sm_elcorreo.get_news_list():
-    all_items.append(e)
-for e in sm_elmundo.get_news_list():
-    all_items.append(e)
-for e in sm_elpais.get_news_list():
-    all_items.append(e)
-for e in sm_elperiodico.get_news_list():
-    all_items.append(e)
-for e in sm_lavanguardia.get_news_list():
-    all_items.append(e)
-for e in sm_lavozdegalicia.get_news_list():
-    all_items.append(e)
-
-print(len(all_items))
 
 
-
-from nltk.tokenize import sent_tokenize, word_tokenize
-from nltk.corpus import stopwords
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.decomposition import TruncatedSVD
-import re
-import string
-
-def clean_text(s):
-    s = s.lower()
-    s = re.sub(f'[{re.escape(string.punctuation)}]', '', s)
-    return s
-#.append("«").append("»")
-def remove_stop_words(s):
-    stop_words = set(stopwords.words('spanish'))
-    words = s.split()
-    filtered_words = [word for word in words if word.lower() not in stop_words]
-    return " ".join(filtered_words)
-
-#lemmatizer = WordNetLemmatizer()  # Esto debería configurarse para funcionar con español, aquí solo es un placeholder
-
-# Supongamos que all_items es tu lista de noticias
-all_keywords = []
-max_components = 10  # Número máximo de componentes SVD
-
-for noticia in all_items:
-    content = noticia["content"] if "content" in noticia else noticia["title"]
-    content = remove_stop_words(content)
-    content = clean_text(content)
-    sentences = sent_tokenize(content)
-    if content == "":
-        noticia["keywords"] = []
-        continue
-    tfv = TfidfVectorizer(tokenizer=word_tokenize)
-    corpus_transformed = tfv.fit_transform(sentences)
-    num_features = corpus_transformed.shape[1]
-    num_components = min(max_components, num_features - 1)  # Asegurar que num_components sea menos que num_features
-
-    if num_components > 0:  # Solo proceder si hay suficientes características para SVD
-        svd = TruncatedSVD(n_components=num_components)
-        corpus_svd = svd.fit_transform(corpus_transformed)
-        feature_scores = dict(zip(tfv.get_feature_names_out(), svd.components_[0]))
-        topic_output = sorted(feature_scores, key=feature_scores.get, reverse=True)[:5]
-        noticia["keywords"] = topic_output
-
-        # Actualizar all_keywords
-        for keyword in topic_output:
-            found = next((item for item in all_keywords if item[0] == keyword), None)
-            if found:
-                found[1] += 1
-            else:
-                all_keywords.append([keyword, 1])
-# Ordenar y mostrar palabras clave más frecuentes
-all_keywords = sorted(all_keywords, key=lambda x: x[1], reverse=True)
-for keyword in all_keywords:
-    print(keyword)
-
-
-titulares = []
-contenido = ""
-for noticia in all_items:
-    if all_keywords[6][0] in noticia["keywords"]:
-        
-        print(noticia["title"]+"("+noticia["medio"]+")\n\n")
-        print(noticia["content"]+"\n\n\n\n")
-        titulares.append(noticia["title"])
-        contenido+=noticia["content"]+"\n"
-for e in titulares:
-    print(e)
-
+lista_noticias=[
+    {
+        "medio":"20minutos",
+        "title":"Muere Victoria Prego, la periodista que retrató la Transición, a los 75 años",
+        "content":"""Victoria Prego, la periodista que retrató la Transición, ha fallecido esta madrugada en Madrid a los 75 años de edad, según han informado a EFE fuentes de la Asociación de la Prensa de Madrid (APM), que presidió desde el 
+20 de noviembre de 2015 hasta el 19 de noviembre de 2019. La Junta Directiva de la APM ha querido expresar su "profunda tristeza ante la irreparable pérdida" y ha transmitido su más sentido pésame a los familiares, amigos y compañeros, además de agradecer "su total entrega, profesionalidad y buen hacer" como presidenta de la Asociación. Prego era en estos momentos adjunta al director del digital El Independiente, periódico del que ha formado parte desde su fundación en septiembre de 2016 y del que además era presidenta del Consejo de Administración. La periodista trabajó buena parte de su carrera en TVE. Tras unos primeros trabajos en El Alcázar, Informaciones y la Agencia EFE, entró en 1973 en la tele, donde se ocupó de la información internacional, fue corresponsal en Londres y presentó varios programas. Entre ellos, 'su joya de la corona', su famosa serie sobre la Historia de la Transición española, que abarca desde la muerte de Carrero Blanco hasta la victoria electoral del PSOE en 1982 y por la que recibió varios galardones: Los 16 del Año (1995), una Antena de Oro (1996), el Víctor 
+de la Serna (1995) o el Mujer Progresista 1995. Sobre este mismo tema, en mayo de 1999 publicó el Diccionario de la Transición, con las biografías de los protagonistas. Después llegaron otros célebres libros como Los presidentes, Adolfo Suárez, la apuesta del rey, Leopoldo Calvo Sotelo, un presidente de transición, Felipe González, el presidente del cambio y José María Aznar, un presidente para la modernidad. Es, además, autora del guion 
+y narradora del documental Así Murió Franco, que recibió la Medalla de Plata de Documentales Históricos en Festival de Nueva York. Y fue también la encargada de leer el manifiesto al final de la multitudinaria manifestación del 14 de julio de 1997 tras el asesinato del concejal popular de Ermua Miguel Ángel Blanco. Prego también estuvo entre 1993 y 1994 en los canales de televisión autonómicos Telemadrid y Canal Sur en el debate Un momento, por favor. También fue habitual contertulia en el espacio de Jesús Hermida, Hermida y compañía, en Antena 3 a mediados de los 90; a finales de 1995 entrevistó a los tres expresidentes del Gobierno para el especial de Antena 3 El valor de un rey; comienzos de 1996 colaboró con este canal con entrevistas a candidatos en las elecciones generales de marzo. En 1996 se incorporó a Radio Voz, luego Onda Cero, donde presentó durante un año, y 
+a partir del 2001, La brújula del mundo. Prego participó además en numerosas tertulias en distintas emisoras de radio y televisión. Fue uno de los 22 profesionales que en 1997 fundó la Academia de las Artes y las Ciencias de Televisión, una institución la reconoció en marzo de 2017, junto al resto de fundadores, con el Premio Talento Extraordinario. En 1999 fue nombrada miembro del Patronato del Archivo General de la Guerra Civil Española, desde 2007 Centro Documental de la Memoria Histórica, y entre el 2000 y el 2005 fue subdirectora política del diario El Mundo. En esa etapa, realizó el reportaje Juan Carlos I, 25 años de reinado para TVE (2000). Durante diez años, y a partir de 2005, fue adjunta al director de ese diario con Pedro J. Ramírez y Casimiro García-Abadillo. En este periódico publicó una columna y realizó en 2008 El camino de la libertad, una colección de 31 DVD sobre los 30 años de democracia española. A mediados de junio de 2015 abandonó El Mundo, tras la destitución de su director, Casimiro García-Abadillo. Además, en diciembre de 2012 pasó a formar parte del nuevo consejo asesor de la Fundación del Español Urgente (Fundéu BBVA). Entre otros reconocimientos, fue investida Doctora Honoris Causa por la Universidad Rey Juan Carlos en 2016. Y, en 2018, el Ministerio de Educación, Cultura y Deporte le concedió el Premio Nacional de Televisión porque su ejemplo profesional y su independencia debía "servir de guía en la formación de las nuevas generaciones de informadores". Las primeras reacciones Tras darse a conocer la triste noticia, no han tardado en llegar las reacciones de periodistas y políticos que lloran su muerte. Uno de ellos ha sido Pedro Sánchez, quien la ha descrito como "una periodista con mayúsculas". "Suya fue la voz que nos enseñó qué fue la Transición a toda una generación. Un cariñoso abrazo a su familia, amigos y compañeros. Descanse en paz", ha añadido el presidente del Gobierno. "Lamento la muerte de Victoria Prego, una mujer libre que dedicó su vida al periodismo. Nos deja para siempre su excelente crónica televisada de la Transición, que ya es parte de nuestra historia democrática. Mi pésame a su familia y a sus compañeros", ha escrito Alberto Núñez Feijóo, líder de la oposición. También se ha despedido Isabel Díaz Ayuso a través de X (Twitter). "Ha muerto una mujer excelente, una profesional irrepetible. Y con ella se nos va parte de un periodismo más necesario que nunca", ha escrito la presidenta de la Comunidad de Madrid. Rosa Villacastín, escritora, periodista de Diez Minutos y también miembro de la Asociación de la Prensa de Madrid, también ha descrito a su compañera como "una gran periodista de la Transición" y "maestra para toda una generación". "Hoy es un día muy triste para quienes amamos el periodismo. Se nos ha ido un referente. La mujer que mejor narró la Transición y todo lo que ha venido después", ha escrito Sandra Golpe, presentadora de Antena 3 noticias."""
+    },
+    {
+        "medio":"20minutos",
+        "title":"""Sánchez, Feijóo, Franganillo... Políticos y periodistas lamentan su muerte: "Era una voz imprescindible""",
+        "content":"""Diversas personalidades del mundo de la política y del periodismo se han despedido de la periodista Victoria Prego, fallecida este miércoles a los 75 años, resaltando su labor como periodista "de raza" y "maestra" de una 
+generación. El presidente del Gobierno, Pedro Sánchez, ha lamentado "profundamente" en la red social X la muerte de Prego, a quien considera una periodista "con mayúsculas". "Suya fue la voz que nos enseñó qué fue la Transición a toda una generación", ha recalcado Sánchez, quien ha enviado un "cariñoso abrazo" a su familia, amigos y compañeros. Igualmente, el líder del PP, Alberto Núñez Feijóo, ha recordado que Prego fue "una mujer libre" que dedicó su vida al periodismo. "Nos deja para siempre su excelente crónica televisada de la Transición, que ya es parte de nuestra historia democrática", ha remarcado. La presidenta de la Comunidad de Madrid, Isabel Díaz Ayuso, ha ensalzado la figura de la periodista, a la que ha calificado como "una mujer excelente y una profesional irrepetible". "Y con ella se nos va parte de un periodismo más necesario que nunca en España", ha añadido. El presidente de la Junta de Castilla y León, Alfonso Fernández Mañueco, ha remarcado también el "ejemplo de independencia" que ha supuesto esta "gran periodista, que narró como nadie la Transición española". Por su 
+parte, el presidente de la Junta de Andalucía, Juanma Moreno ha recordado que esta muerte supone la pérdida de "una de las grandes firmas" del periodismo en la historia reciente de España y que, "hoy más que nunca", su testimonio de la Transición es "imperdible". En esta misma línea, también ha mostrado su "dolor y pesar" el presidente de Castilla-La Mancha, Emiliano García-Page, despidiéndose de una periodista "ejemplar" y "una de las principales voces" que contaron y explicaron la Transición. La presidenta del Congreso de los Diputados, Francina Armengol, se ha sumado a los pésames por la muerte de Prego apuntando a que fue la encargada de "relatar unos años fundamentales de la historia de España desde el rigor y la profesionalidad". "Perdemos una voz imprescindible del periodismo para entender nuestro pasado reciente", ha indicado. El portavoz del PP en el Congreso, Miguel Tellado, ha coincidido en valorar a la periodista como una profesional "respetada, admirada y libre". "Victoria Prego fue testigo y voz de la Transición. Una periodista reconocida en todas sus facetas, que narró con 
+maestría todos los cambios y momentos políticos que ha vivido España desde entonces", ha apuntado. La delegada de Cultura, Turismo y Deporte de Madrid y escritora, Marta Rivera de la Cruz, ha mostrado su "inmensa tristeza" por el fallecimiento de Prego, alguien "insobornable, mesurada, inteligente y buena persona". La diputada del PP Cayetana Álvarez de Toledo, también ha recordado la figura de una mujer "maravillosa, inteligente, insobornable, libre, justa, cálida y generosa". Dos exministros socialistas, Beatriz Corredor y Miguel Sebastián, también han ensalzada la figura de Prego, "una referente y maestra" para la primera y alguien "clave para entender la Transición" para Sebastián, quien afirma va a "recordar siempre por su apoyo personal durante la pandemia". Mientras, el candidato del PSC al 12M y exministro, Salvador Illa ha calificado a Prego como "una de las voces más emblemáticas" de la Transición española y una profesional "respetada", que retrató uno de los momentos más importantes de la democracia española dejando "un valioso legado". El adiós del periodismo En el sector periodístico también se han pronunciado numerosas voces para despedirse de Prego, especialmente varios de sus excompañeros. Por ejemplo, el director de El Independiente, Casimiro García-Abadillo, quien en declaraciones a TVE 
+recogidas por Europa Press ha remarcado que la principal virtud de la periodista es que fue "una persona querida por todos". "Era una maravilla trabajar con ella, porque era una bellísima persona, aparte de una grandísima periodista", ha celebrado García-Abadillo, que además ha ensalzado su faceta pionera. "Estamos hablando de la época en la que todavía Franco estaba vivo, en el que el papel de la mujer era muy reducido y la mujer estaba 
+casi relegada a un segundo plano, mientras ella era una estrella del periodismo y de la televisión", ha indicado. Por su parte, la presidenta de la Asociación de la Prensa de Madrid (APM), María Rey, ha definido a Prego como una periodista "rigurosa, reflexiva, analítica, serena y humilde, con una extraordinaria capacidad de comunicar". La asociación, de la que Prego estuvo al frente cuatro años, también ha mostrado su "profunda tristeza 
+ante la irreparable pérdida" y agradecido su "total entrega, profesionalidad y buen hacer". Asimismo, el periodista Carlos Franganillo se ha despedido de una "periodista de raza y referencia principal de la Transición" para los nacidos en democracia. También Ana Pastor ha tenido palabras para Prego, a quien guarda "mucho cariño". La periodista ha recordado alguna conversación cuando trabajaban para TVE en la que explicaba cómo había sido 
+para ella ser madre "y una de las pocas mujeres en la televisión en los años 80". Fernando Ónega: "Una testigo excepcional" El periodista Fernando Ónega, en declaraciones a TVE, ha recordado a su compañera de profesión como "una periodista muy independiente en todos los sentidos siempre". "Es la desaparición de una testigo excepcional de una época excepcional de la historia de España", ha lamentado. Por su parte, el director de El Español, Pedro J. Ramírez, ha lamentado que Prego se vaya "en el momento en que más falta hacía su firmeza ética, su crítica serena, su consistencia, su ponderación y su sabiduría". "Ha sido una de las mejores periodistas de entre siglos y tenerla cerca en situaciones críticas fue un privilegio y una gran ayuda", ha indicado. El director del diario El Mundo, Joaquín Manso, ha ensalzado la figura de la periodista que también trabajó para esa casa, reiterando el "orgullo" que eso ha supuesto para la cabecera. "Historia de lo mejor de nosotros mismos", ha añadido. Otros periodistas que compartieron labor con Prego y que también han tenido palabras para ella han sido Juan Cruz, quien habla de "una maestra del oficio cada vez menos parecido a lo que ella fue". "Prego significa el modo tranquilo de narrar lo extraordinario con profundidad, información y cultura", ha indicado. También 
+se ha despedido Sandra Golpe, que la ha descrito como "un referente" para los que "aman el periodismo". Del mismo modo lo ha hecho Ana Pastor, que ha recordado con cariño cómo Prego contaba en TVE la experiencia de ser "una de las pocas mujeres en la televisión de los años 80". Rosa Villacastín ha dicho adiós a su "amiga", explicando que su muerte ha supuesto "un mazazo" para quienes la "admiraban y querían". "Qué solos nos vamos quedando", ha lamentado. Víctor Arribas, quien aprendió "a su lado" en Onda Cero, Telemadrid y TVE, ha asegurado que se trata de "una de las periodistas más importantes de la historia en España"."""
+    },
+    {
+        "medio":"ElConfidencial",
+        "title":"Muere Victoria Prego, la memoria de la Transición española, a los 75 años",
+        "content":"""A Victoria Prego, que acaba de morir a los 75 años, casi todo el mundo la conocía por su contribución al conocimiento de la Transición a través de documentales irrepetibles hasta convertirse en un icono de la memoria colectiva de un período esencial en nuestra reciente historia democrática. Pero Toya, que es como algunos la conocíamos en los tiempos de Radio Nacional, era, sobre todo, una periodista de la vieja escuela. Es decir, alguien 
+que pasa muchas horas en una redacción hasta convertirla en la práctica en el salón de su casa. También lo hizo en El Mundo, donde coincidimos en los mejores tiempos de periódico mientras simultaneaba su actividad profesional con la radio, en Onda Cero. La Prego pasaba muchas horas escudriñando con absoluta meticulosidad cualquier papel que se le ponía delante, lo que dice mucho en su favor en unos tiempos en los que brilla la superficialidad. No es baladí eso de pasar muchas horas en una redacción. Significa empaparse de un ambiente intelectual –un periódico siempre es un producto intelectual– único. Lo leía todo y tenía criterio, que es lo que define a 
+un buen periodista que no se deja llevar por falsas impresiones o por lo primero que le pasa por la cabeza. ▶️ Muere a a los 75 años Victoria Prego, la periodista que retrató la Transición: https://t.co/KXZSEUD9Yx D. E. P
+.▶️ Fue presidenta de la Asociación de la Prensa de Madrid desde el 20 de noviembre de 2015 hasta el 19 de noviembre de 2019▶️ La Junta Directiva de la APM quiere… pic.twitter.com/PFhyt7TzGm— APM (@aprensamadrid) May 1, 2
+024 Criterio no solo en todo lo relacionado con la Transición, sino con asuntos de política internacional y, por supuesto, la política nacional, en particular los asuntos relacionados con la justicia, donde tenía unas fuentes privilegiadas. Por eso sería un poco reduccionistas limitar su aportación periodística a aquel periodo histórico. Prego era mucho más que eso. Tuvo, eso sí, una ayuda inestimable al tener acceso al impresionante fondo documental de TVE, por entonces la única televisión, cuyo archivo, junto a su marido, explotó con avidez. Sin duda, por su pasión por el periodismo, pero no es un plano teórico, sino cercano a la gente. Aquel diario de 
+la dos de la tarde en RNE fue probablemente uno de los primeros en los que el conductor del programa no era sólo un locutor, sino que interpretaba la realidad informativa para acercarla a los oyentes. Otros lo habían hecho antes, pero nadie como Victoria Prego fue capaz de crear un clima de complicidad entre la audiencia y el hecho informativo. Eso, en realidad, es el periodismo. Y la Toya supo hacerlo mejor. Numerosos galardones Escritora en Diccionario de la Transición, Presidentes y otros dedicados a Adolfo Suárez, Calvo Sotelo, Felipe González y José María Aznar, Prego fue distinguida con diversos galardones como el Premio APM de Honor en 2013, Premio Víctor de la Serna, en 1995, como equipo de 'La Transición' de TVE, Premio de Periodismo El Correo 1995, Antena de Oro 1995, Premio Fundación Independiente de Periodismo Camilo José Cela 2013, Premio Europeo de Periodismo 2000, Medalla de Plata de Documentales Históricos del Festival de Nueva York, Premio Luca de Tena 2015 o Premio Clara Campoamor del Ayuntamiento de Madrid 2015. Entre otros reconocimientos, fue investida Doctora Honoris Causa por la Universidad Rey Juan Carlos en 2016 y desde 2015 hasta 2019 fue presidenta de la Asociación de la Prensa de Madrid."""
+    },
+    {
+        "medio":"LaVanguardia",
+        "title":"Muere Victoria Prego, periodista que retrató la transición, a los 75 años",
+        "content":"""Cualquiera que charlaba con ella por primera vez no podía evitar fijarse en su voz. Porque la voz de Victoria Prego era la de la transición. La de los documentales que contaban con todo lujo de detalles y el máximo rigor 
+qué pasó en España desde la muerte de Franco aquel 20 de noviembre de 1975. La periodista Victoria Prego ha fallecido esta mañana a los 75 años, según ha informado El Independiente , el diario en el que actualmente ejercía de adjunta al director, Casimiro García Abadillo."""
+    },
+]
 text=""
-for e in titulares:
-    text+=e+". "
-
-# import torch
-# from transformers import BertTokenizerFast, EncoderDecoderModel
-# device = 'cuda' if torch.cuda.is_available() else 'cpu'
-# ckpt = 'mrm8488/bert2bert_shared-spanish-finetuned-summarization'
-# tokenizer = BertTokenizerFast.from_pretrained(ckpt)
-# model = EncoderDecoderModel.from_pretrained(ckpt).to(device)
-
-# def generate_summary(text):
-
-#    inputs = tokenizer([text], padding="max_length", truncation=True, max_length=512, return_tensors="pt")
-#    input_ids = inputs.input_ids.to(device)
-#    attention_mask = inputs.attention_mask.to(device)
-#    output = model.generate(input_ids, attention_mask=attention_mask)
-#    return tokenizer.decode(output[0], skip_special_tokens=True)
-
-
-# print("resumen 1")
-# print(generate_summary(text))
+for noticia in lista_noticias:
+    text+=noticia["content"]+". "
 
 from transformers import pipeline
 
@@ -127,46 +51,25 @@ summarizer = pipeline("summarization", model="google-t5/t5-base")
 es_en_translator = pipeline("translation", model="Helsinki-NLP/opus-mt-es-en")
 en_es_translator = pipeline("translation", model="Helsinki-NLP/opus-mt-en-es")
 
-# Traduce el texto del español al inglés
-translated_text = es_en_translator(text)[0]['translation_text']
+# Utiliza sent_tokenize de nltk o una función similar para dividir el texto en oraciones
+from nltk.tokenize import sent_tokenize
+import nltk
+nltk.download('punkt')
+
+# Suponiendo que `text` contiene el texto completo que quieres traducir y resumir
+sentences = sent_tokenize(text)
+
+# Traduce cada oración individualmente para evitar superar el límite de tokens
+translated_sentences = [es_en_translator(sentence)[0]['translation_text'] for sentence in sentences if len(sentence.split()) <= 90]  # Asegúrate de que cada oración sea corta
+
+# Combina las oraciones traducidas en un solo texto en inglés
+translated_text = " ".join(translated_sentences)
 
 # Genera el resumen en inglés
-summary_in_english = summarizer(translated_text, max_length=30, min_length=10, do_sample=False)[0]['summary_text']
+summary_in_english = summarizer(translated_text, max_length=300, min_length=10, do_sample=False)[0]['summary_text']
 
 # Traduce el resumen de vuelta al español
 summary_in_spanish = en_es_translator(summary_in_english)[0]['translation_text']
 
-print("Resumen(TITULO):")
+print("Resumen:")
 print(summary_in_spanish)
-
-
-
-import spacy
-import math
-# Suponemos que se carga el modelo en español
-nlp = spacy.load("es_core_news_sm")
-def summarize_article(text, num_sentences=5):
-    # Procesar el texto con el modelo NLP
-    doc = nlp(text)
-    
-    # Identificar y priorizar oraciones basadas en entidades nombradas y otros criterios
-    sentences = list(doc.sents)
-    print("num fases ", len(sentences))
-    ranked_sentences = sorted(sentences, key=lambda s: len(s.ents), reverse=True)
-    
-    
-    num_sentences = min(num_sentences, math.ceil(len(ranked_sentences)/3)) #divide entre 3 y redondea hacia arriba
-    print("num frases a devolver ", num_sentences)
-    # Compilar el resumen basado en las oraciones mejor clasificadas
-    summary = " ".join([str(sentence) for sentence in ranked_sentences[:num_sentences]])
-    
-    return summary
-
-
-
-print("Resumen(NOTICIA):")
-print(summarize_article(contenido, 5))
-
-
-
-
