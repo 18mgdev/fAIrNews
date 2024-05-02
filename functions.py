@@ -11,6 +11,8 @@ def clean_html(html_content):
     
     # Extraer el texto limpio sin etiquetas HTML
     text = soup.get_text()
+    text = text.replace("»", "\"")
+    text = text.replace("«", "\"")
     
     # Opcional: limpiar espacios extra y saltos de línea
     text = ' '.join(text.split())
@@ -24,6 +26,8 @@ def clean_title_AMPs(text): #EN DESUSO, se usa la de arriba
     """
     text = text.replace("&amp;quot;", "\"")
     text = text.replace("&quot;", "\"")
+    text = text.replace("»", "\"")
+    text = text.replace("«", "\"")
     text = re.sub(r"&amp;.*?;", "", text)
 
     return text
