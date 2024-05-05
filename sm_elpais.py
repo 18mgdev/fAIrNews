@@ -13,5 +13,8 @@ def get_news_list():
     for e in items:
         e["medio"]=NAME
         e["title"]=f.clean_html(e["title"])
-        e["content"]=f.clean_html(str(e["content"]).replace("Seguir leyendo",""))
+        if "suscríbete" in e["content"] and "EL PAÍS" in e["content"]:
+            e["content"]=f.clean_html(str(e["description"]).replace("Seguir leyendo",""))
+        else:
+            e["content"]=f.clean_html(str(e["content"]).replace("Seguir leyendo",""))
     return items

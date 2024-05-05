@@ -13,6 +13,11 @@ def clean_html(html_content):
     text = soup.get_text()
     text = text.replace("»", "\"")
     text = text.replace("«", "\"")
+    text = text.replace("“", "\"")
+    text = text.replace("”", "\"")
+    text = text.replace("‘", "\"")
+    text = text.replace("’", "\"")
+    text = text.replace(" | ", ". ")
     
     # Opcional: limpiar espacios extra y saltos de línea
     text = ' '.join(text.split())
@@ -28,6 +33,10 @@ def clean_title_AMPs(text): #EN DESUSO, se usa la de arriba
     text = text.replace("&quot;", "\"")
     text = text.replace("»", "\"")
     text = text.replace("«", "\"")
+    text = text.replace("“", "\"")
+    text = text.replace("”", "\"")
+    text = text.replace("‘", "\"")
+    text = text.replace("’", "\"")
     text = re.sub(r"&amp;.*?;", "", text)
 
     return text
