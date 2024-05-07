@@ -81,8 +81,9 @@ def summarize_headlines(titulares:list):
     text=""
     for e in titulares:
         text+=e+". "
-    # Inicializa las pipelines de resumen y traducción
+    # pipeline resumen
     summarizer = pipeline("summarization", model="google-t5/t5-base")
+    # pipeline traducciones
     es_en_translator = pipeline("translation", model="Helsinki-NLP/opus-mt-es-en")
     en_es_translator = pipeline("translation", model="Helsinki-NLP/opus-mt-en-es")
 
@@ -100,13 +101,14 @@ def summarize_headlines(titulares:list):
 
 import spacy
 import math
-# Suponemos que se carga el modelo en español
+
 def summarize_articles(contents:list, num_sentences=5, model_name="es_core_news_sm"):
     text=""
     for e in contents:
         text+=e+". "
     nlp = spacy.load(model_name)
-    # Procesar el texto con el modelo NLP
+
+    #procesa el texto
     doc = nlp(text)
     
     # Identificar y priorizar oraciones basadas en entidades nombradas y otros criterios
@@ -115,7 +117,7 @@ def summarize_articles(contents:list, num_sentences=5, model_name="es_core_news_
     
     
     num_sentences = max(num_sentences, math.ceil(len(ranked_sentences)/3)) #divide entre 3 y redondea hacia arriba
-    # Compilar el resumen basado en las oraciones mejor clasificadas
+    #junta el top de mejores frases
     summary = " ".join([str(sentence) for sentence in ranked_sentences[:num_sentences]])
     
     return summary
@@ -161,7 +163,7 @@ def generate_summs_json(all_items:list, top_keywords:list, min_rank_keyword=3):
             {
                 "keyword": keyword,
                 "relevance": rank,
-                "title": summarize_headlines(titles),
+                "title": summarize_headlines(titles).split(".")[0] if len(summarize_headlines(titles).split("."))>0 else summarize_headlines(titles),
                 "summary": summarize_articles(contents),
                 "references": referencias,
                 "media": imagenes
@@ -177,11 +179,6 @@ print("num noticias: ",len(all_items))
 
 top_keywords = generate_top_keywords(all_items, num_topics=4)
 
-for i in all_items:
-    if "suscríbete" in i["keywords"]:
-        with open("suscribete.json", "w", encoding="utf-8") as f:
-            json.dump(i, f, indent=4, ensure_ascii=False)
-
 
 
 
@@ -191,7 +188,7 @@ for e in top_keywords:
 final_summs=generate_summs_json(all_items, top_keywords, min_rank_keyword=3)
 
 
-with open("summs.json", "w", encoding="utf-8") as f:
+with open("summs1.json", "w", encoding="utf-8") as f:
     json.dump(final_summs, f, indent=4, ensure_ascii=False)
 
 
