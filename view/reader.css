@@ -1,0 +1,52 @@
+#back{
+  position: absolute;
+  display: block;
+}
+
+article h1 {
+  font: 50px/1 "Playfair Display SC";
+  font-style: italic;
+  text-align: center;
+
+  padding: 5px;
+  font-size: 40px;
+  text-align: center;
+  margin-bottom: 0.8rem;
+  font-weight: bold;
+
+  color: #333;
+}
+.text-columns {
+  column-count: 2;
+  column-gap: 20px;
+}
+
+.full-width {
+  text-align: center;
+  width: 90%;
+  height: auto;
+  display: block;
+  margin-bottom: 20px;
+}
+img{
+  border: black 1px solid;
+}
+.inline-left {
+  width: 50%;
+  float: left;
+  margin: 10px 10px 10px 0px;
+  height: auto;
+}
+.inline-right {
+  width: 50%;
+  float: right;
+  margin: 10px 0px 10px 10px; /*up right down left*/
+  height: auto;
+}
+
+article p{
+  font-size: 19px;
+  line-height: 1.6;
+  margin-bottom: 10px;
+  font-family: serif;
+}

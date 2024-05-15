@@ -1,0 +1,62 @@
+#preview-high, #preview-medium, #preview-low{
+    display: inline-block;
+    margin-top: 0px;
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+    text-align: center;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    vertical-align: top;
+}
+
+#preview-high span, #preview-medium span, #preview-low span{
+    color: #676464;
+    float: left;
+    font-size: 13px;
+}
+div#main img{
+    width: 100%;
+}
+
+div#main a:hover{
+    text-decoration: none;
+    background-color: #dad5d5;
+}
+
+/*HIGH*/
+#preview-high{
+    width: 80%;
+}
+
+#preview-high h1{
+    font-size: 2.2em;
+}
+
+/*MEDIUM*/
+#preview-medium{
+    width: 45%;
+}
+
+#preview-medium h1{
+    font-size: 1.7em;
+    text-align: justify;
+}
+#preview-medium p{
+    font-size: 16px;
+    text-align: justify;
+}
+
+/*MEDIUM*/
+#preview-low{
+    width: 30%;
+}
+
+#preview-low h1{
+    text-align: justify;
+    font-size: 1.2em;
+}
+#preview-low p{
+    font-size: 16px;
+    text-align: justify;
+}
