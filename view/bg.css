@@ -232,3 +232,10 @@
     padding-bottom: 5px;
     color: #676464;
 }
+#references{
+    text-align: center;
+}
+#references a{
+    text-decoration: none;
+    color: blue;
+}
