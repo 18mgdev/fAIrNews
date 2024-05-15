@@ -1,18 +1,45 @@
 from bs4 import BeautifulSoup
+import re
+import html
 
 
-def html_to_text(html):
-    """
-    Convert HTML to text
-    """
-    soup = BeautifulSoup(html, 'html.parser')
-    return soup.get_text()
+def clean_html(html_content):
 
-def remove_seguir_leyendo(text):
+    html_content = html.unescape(html_content)
+    # Parsear el contenido HTML
+    soup = BeautifulSoup(html_content, 'html.parser')
+    
+    # Extraer el texto limpio sin etiquetas HTML
+    text = soup.get_text()
+    text = text.replace("»", "\"")
+    text = text.replace("«", "\"")
+    text = text.replace("“", "\"")
+    text = text.replace("”", "\"")
+    text = text.replace("‘", "\"")
+    text = text.replace("’", "\"")
+    text = text.replace(" | ", ". ")
+    
+    # Opcional: limpiar espacios extra y saltos de línea
+    text = ' '.join(text.split())
+    
+    return text
+
+
+def clean_title_AMPs(text): #EN DESUSO, se usa la de arriba
     """
-    Remove "Seguir leyendo" from text
+    Eliminar cadenas no deseables en el titulo. Ejemplo: El PSOE se dice &amp;quot;tajante&amp;quot; frente a Aragonès: &amp;quot;Ni hay ni habrá referéndum&amp;quot; 
     """
-    return text.split("Seguir leyendo")[0]
+    text = text.replace("&amp;quot;", "\"")
+    text = text.replace("&quot;", "\"")
+    text = text.replace("»", "\"")
+    text = text.replace("«", "\"")
+    text = text.replace("“", "\"")
+    text = text.replace("”", "\"")
+    text = text.replace("‘", "\"")
+    text = text.replace("’", "\"")
+    text = re.sub(r"&amp;.*?;", "", text)
+
+    return text
 
 # {
 #     status: "ok",

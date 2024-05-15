@@ -2,6 +2,7 @@ import functions as f
 import api_rss2json as r2j
 
 RSS_URL="https://rss.elconfidencial.com/espana/"
+NAME="ElConfidencial"
 
 #
 
@@ -11,5 +12,7 @@ def get_news_list():
     """
     items = r2j.get_JSON(RSS_URL)["items"]
     for e in items:
-        e["content"]=f.html_to_text(e["content"])
+        e["medio"]=NAME
+        e["title"]=f.clean_html(e["title"])
+        e["content"]=f.clean_html(e["content"])
     return items
