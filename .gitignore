@@ -2,3 +2,5 @@
 /__pycache__
 noticias.txt
 /myenv
+/news_sources/__pycache__
+/api/__pycache__

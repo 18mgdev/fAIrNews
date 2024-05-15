@@ -1,5 +1,5 @@
-import functions as f
-import api_rss2json as r2j
+import text_cleaner as f
+import api.api_rss2json as r2j
 
 RSS_URL="https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada"
 NAME="ElPais"
@@ -12,9 +12,9 @@ def get_news_list():
     items = r2j.get_JSON(RSS_URL)["items"]
     for e in items:
         e["medio"]=NAME
-        e["title"]=f.clean_html(e["title"])
+        e["title"]=f.rss_clean_html(e["title"])
         if "suscríbete" in e["content"] and "EL PAÍS" in e["content"]:
-            e["content"]=f.clean_html(str(e["description"]).replace("Seguir leyendo",""))
+            e["content"]=f.rss_clean_html(str(e["description"]).replace("Seguir leyendo",""))
         else:
-            e["content"]=f.clean_html(str(e["content"]).replace("Seguir leyendo",""))
+            e["content"]=f.rss_clean_html(str(e["content"]).replace("Seguir leyendo",""))
     return items

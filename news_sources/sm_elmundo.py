@@ -1,5 +1,5 @@
-import functions as f
-import api_rss2json as r2j
+import text_cleaner as f
+import api.api_rss2json as r2j
 
 RSS_URL="https://e00-elmundo.uecdn.es/elmundo/rss/portada.xml"
 NAME="ElMundo"
@@ -11,6 +11,6 @@ def get_news_list():
     items = r2j.get_JSON(RSS_URL)["items"]
     for e in items:
         e["medio"]=NAME
-        e["title"]=f.clean_html(e["title"])
-        e["content"]=f.clean_html(str(e["description"]).replace("Leer</a>","</a>"))+"."
+        e["title"]=f.rss_clean_html(e["title"])
+        e["content"]=f.rss_clean_html(str(e["description"]).replace("Leer</a>","</a>"))+"."
     return items
