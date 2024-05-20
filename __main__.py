@@ -1,11 +1,47 @@
+#1 coger noticias
 from news_collector import get_all_news
 all_items=get_all_news()
+import json
 print("num noticias: ",len(all_items))
+with open("pruebas/news.json", "w", encoding="utf-8") as f:
+    json.dump(all_items, f, indent=4, ensure_ascii=False)
 
-from clusterizer import generate_top_keywords, cluster_news
+
+#2 generar top keywords y clusters
+from clusterizer import generate_top_keywords, cluster_news, optimalK_silhouette, get_classified_news_list
+all_texts=[]
+for e in all_items:
+    all_texts.append(e["title"]+". "+e["content"])
+k_optimal=optimalK_silhouette(all_texts, int(len(all_items)*0.8))
+
+clustered_news = cluster_news(all_items, num_clusters=k_optimal)
+
 top_keywords = generate_top_keywords(all_items, num_topics=4)
 
-clustered_news = cluster_news(all_items, num_clusters=6)
+#3 crear lista de noticias agrupadas por keywords y clusters
+classified_news=get_classified_news_list(top_keywords, clustered_news, all_items)
+
+
+# import json
+# import numpy as np
+
+# def convert_to_serializable(obj):
+#     if isinstance(obj, dict):
+#         return {k: convert_to_serializable(v) for k, v in obj.items()}
+#     elif isinstance(obj, list):
+#         return [convert_to_serializable(i) for i in obj]
+#     elif isinstance(obj, np.int32):
+#         return int(obj)
+#     else:
+#         return obj
+
+# # Convierte classified_news a una estructura serializable
+# classified_news_serializable = convert_to_serializable(classified_news)
+
+# with open("pruebas/resultado.json", "w", encoding="utf-8") as f:
+#     json.dump(classified_news_serializable, f, indent=4, ensure_ascii=False)
+
+
 
 
 
@@ -45,7 +81,6 @@ def generate_summs_json(all_items:list, top_keywords:list, min_rank_keyword=3):
                         "link": noticia["enclosure"]["thumbnail"]
                     })
             index+=1
-
         #se monta el json y se añade a la lista final
         final_summs.append(
             {
@@ -58,36 +93,8 @@ def generate_summs_json(all_items:list, top_keywords:list, min_rank_keyword=3):
             }
             )
     return final_summs
-    
+ 
 final_summs=generate_summs_json(all_items, top_keywords, min_rank_keyword=3)
-
-import json
-# with open("pruebas/noticias.json", "r", encoding="utf-8") as f:
-#     all_items=json.load(f)
-
-
-
-org_json=[]
-for k in top_keywords:
-    item={}
-    item["keyword"]=k[0]
-    item["noticias"]=[]
-    for e in all_items:
-        if k[0] in e["keywords"]:
-            item["noticias"].append(e)
-    org_json.append(item)
-with open("pruebas/org_noticias.json", "w", encoding="utf-8") as f:
-    json.dump(org_json, f, indent=4, ensure_ascii=False)
-
-
-
-for e in top_keywords:
-    print(e) if e[1]>1 else None
-
-
-
-with open("pruebas/summs2.json", "w", encoding="utf-8") as f:
-    json.dump(final_summs, f, indent=4, ensure_ascii=False)
 
 
 

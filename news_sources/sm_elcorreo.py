@@ -1,5 +1,5 @@
 import text_cleaner as f
-import api.api_rss2json as r2j
+import api_rss2json as r2j
 
 RSS_URL="https://www.elcorreo.com/rss/2.0/portada/"
 NAME="ElCorreo"

@@ -1,5 +1,5 @@
 import text_cleaner as f
-import api.api_rss2json as r2j
+import api_rss2json as r2j
 
 RSS_URL="https://e00-elmundo.uecdn.es/elmundo/rss/portada.xml"
 NAME="ElMundo"

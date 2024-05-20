@@ -1,5 +1,5 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
-from text_cleaner import clean_text, remove_stop_words
+from text_preprocessor import clean_text, remove_stop_words
 
 from collections import defaultdict # Utilizar defaultdict para manejar contadores automáticamente
 
@@ -31,7 +31,7 @@ from sklearn.cluster import KMeans
 def cluster_news(all_items, num_clusters=5):
     """
     Recibe la lista de JSONs de noticias y devuelve un diccionario con las noticias agrupadas por cluster.
-    (indice, lista de json)
+    defaultdict[indice, lista de json]
     """
     # Preparar los textos de las noticias
     all_texts = [remove_stop_words(clean_text(item["title"] + " " + item["content"])) for item in all_items]
@@ -54,3 +54,80 @@ def cluster_news(all_items, num_clusters=5):
         clustered_news[item['cluster']].append(item)
     
     return clustered_news
+
+
+
+from sentence_transformers import SentenceTransformer
+
+from sklearn.metrics import silhouette_score
+from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
+def optimalK_silhouette(lista_textos, max_clusters, mostrar_grafico=False):
+    """
+    Encuentra el número óptimo de clusters utilizando el coeficiente de silueta.
+    """
+    model = SentenceTransformer("all-MiniLM-L6-v2")
+    embeddings = model.encode(lista_textos)
+
+    silhouette_scores = []
+    ks = range(2, max_clusters)  # k = 1 no es válido para el coeficiente de silueta
+    for k in ks:
+        kmeans = KMeans(n_clusters=k, random_state=42)
+        cluster_labels = kmeans.fit_predict(embeddings)
+        silhouette_scores.append(silhouette_score(embeddings, cluster_labels))
+
+    # Graficar los puntajes de silueta
+    if mostrar_grafico:
+        plt.figure(figsize=(8, 4))
+        plt.plot(ks, silhouette_scores, '-o')
+        plt.xlabel('number of clusters, k')
+        plt.ylabel('silhouette score')
+        plt.title('Silhouette Analysis For Optimal k')
+        plt.xticks(ks)
+        plt.show()
+    return silhouette_scores.index(max(silhouette_scores))+2
+
+
+
+
+def get_classified_news_list(top_keywords:defaultdict, clusters:defaultdict, ln:list):
+    """
+    Devuelve la lista de agrupaciones de NOTICIAS RELACIONADAS clasificadas por keyword y cluster
+    {
+        "keyword": str,
+        "noticias": list[noticia1, noticia2, ...]
+    }
+    """
+    #agrupo las noticias por keyword
+    org_json=[]
+    for k in top_keywords:
+        item={}
+        item["keyword"]=k[0]
+        item["noticias"]=[]
+        for e in ln:
+            if k[0] in e["keywords"]:
+                item["noticias"].append(e)
+        org_json.append(item)
+
+    #selecciono las noticias solo si coinciden en el keyword y en el cluster
+    for e in org_json:
+        top=defaultdict(int)
+        for c in e["noticias"]:
+            top[c["cluster"]]+=1
+        if len(top)>0:
+            st = sorted(top.items(), key=lambda x: x[1], reverse=True)
+            cluster_num=int(st[0][0])
+
+            clusters[cluster_num]
+            selected_ids=defaultdict(int)
+            for noticia in e["noticias"]+clusters[cluster_num]:
+                selected_ids[noticia["id"]]+=1
+            
+            noticias_escogidas=[]
+            for noti in e["noticias"]:
+                if selected_ids[noti["id"]]==2 and ln[noti["id"]-1]!=None:
+                    noticias_escogidas.append(ln[noti["id"]-1])
+                    ln[noti["id"]-1]=None
+            e["noticias"]=noticias_escogidas
+
+    return org_json
