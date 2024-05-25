@@ -1,4 +1,4 @@
-MIN_RELEVANCE_SUMMARY_GENERATION = 2
+MIN_RELEVANCE_SUMMARY_GENERATION = 3
 
 import datetime
 start_time=datetime.datetime.now()
@@ -50,7 +50,7 @@ classified_news=get_classified_news_list(top_keywords, clustered_news, all_items
 
 
 #4 crea el json de las noticias resumidas
-from summarizer import summarize_headlines, summarize_articles
+from summarizer import generate_summary_from_list,summarize_headlines
 
 def generate_summs_json(classification:list, top_keywords, min_rank_keyword=MIN_RELEVANCE_SUMMARY_GENERATION):
     """
@@ -96,7 +96,7 @@ def generate_summs_json(classification:list, top_keywords, min_rank_keyword=MIN_
                 "keyword": tema["keyword"],
                 "relevance": relevance,
                 "title": summarize_headlines(titles).split(".")[0] if len(summarize_headlines(titles).split("."))>0 else summarize_headlines(titles),
-                "summary": summarize_articles(contents),
+                "summary": generate_summary_from_list(contents),
                 "references": referencias,
                 "media": imagenes
             }
