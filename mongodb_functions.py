@@ -107,7 +107,3 @@ def select_imagen_portada(items:list):
     # Devolver el campo "link" del elemento seleccionado
     return selected_item['link']
 
-# Esto se agrega para que muchos archivos pueden reutilizar la función get_database()
-if __name__ == "__main__":   
-    print("activo")
-    

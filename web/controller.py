@@ -50,7 +50,6 @@ def noticia_reader(request: HttpRequest, noticiaid: str):
     Renderiza una noticia
     """
     content=get_noticia(noticiaid)
-    print(content)
     #parrafos=[{texto,link_img,inline-left|right}]
     parrafos=[]
     lista_media=[]
