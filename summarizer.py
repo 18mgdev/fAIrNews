@@ -56,7 +56,7 @@ def remove_dashes(text):
 def get_num_tokens(text):
   return len(tokenizer(text, return_tensors="pt")['input_ids'][0])
 
-
+import json
 def generate_summary(text, max_tokens):
   while get_num_tokens(text)>max_tokens:
     print("tokens actuales:", get_num_tokens(text))
@@ -65,8 +65,12 @@ def generate_summary(text, max_tokens):
     aux=""
     chunks = split_text(text, max_chunk_size=ml)
     for chunk in chunks:
-      aux += summarize_with_bert2bert(chunk, ml=ml) + ". "
+      #aux += summarize_with_bert2bert(chunk, ml=ml) + ". "
+      aux += summarize_with_t5(chunk, ml=ml) + ". "
     text=aux
+
+    with open("pruebas/resu"+str(ml)+".json", "w", encoding="utf-8") as f:
+        json.dump(remove_dashes(text), f, indent=4, ensure_ascii=False)
   return remove_dashes(text)
 
 
@@ -96,6 +100,24 @@ def generate_summary_from_list(texts:list, max_tokens_to_generate=max_tokens):
   return remove_dashes(finstr)
 
 from transformers import pipeline
+def summarize_with_t5(text, ml=500):
+
+    # pipeline resumen
+    summarizer = pipeline("summarization", model="google-t5/t5-base")
+    # pipeline traducciones
+    es_en_translator = pipeline("translation", model="Helsinki-NLP/opus-mt-es-en")
+    en_es_translator = pipeline("translation", model="Helsinki-NLP/opus-mt-en-es")
+
+    # Traduce el texto del español al inglés
+    translated_text = es_en_translator(text)[0]['translation_text']
+
+    # Genera el resumen en inglés
+    summary_in_english = summarizer(translated_text, max_length=ml, min_length=int(ml*0.4), do_sample=False)[0]['summary_text']
+
+    # Traduce el resumen de vuelta al español
+    summary_in_spanish = en_es_translator(summary_in_english)[0]['translation_text']
+    return summary_in_spanish
+
 def summarize_headlines(titulares:list):
 
     text=""
