@@ -130,4 +130,4 @@ def get_classified_news_list(top_keywords:defaultdict, clusters:defaultdict, ln:
                     ln[noti["id"]-1]=None
             e["noticias"]=noticias_escogidas
 
-    return org_json
+    return sorted(org_json, key=lambda x: len(x["noticias"]), reverse=True)

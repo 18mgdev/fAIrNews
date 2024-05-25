@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/bg.css' %}">
+    <link rel="stylesheet" href="{% static 'css/frontpage.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <title>Document</title>
+</head>
+
+<body class="area">
+
+
+    <center>
+        <div class="context">
+            <div id="header">
+                <h1><a href="/">fAIrNews</a></h1>
+                <hr>
+                <p>Última actualización: {{date}}</p>
+                <hr>
+            </div>
+
+
+        </div>
+
+        <div id="main">
+            {% for h in high %}
+            <a href="noticia/{{h.noticia_id}}" id="preview-high">
+                <span>keyword: {{h.keyword}}</span>
+                {% if h.thumbnail %}
+                <img src="{{h.thumbnail}}" onerror="this.src='{% static 'img/unavaible-img.webp' %}'"
+                    alt="Imagen Destacada" class="full-width">
+                {% else %}
+                <img src="{% static 'img/unavaible-img.webp' %}"
+                    alt="Imagen Destacada" class="full-width">
+                {% endif %}
+                <h1>{{h.title}}</h1>
+            </a>
+            {% endfor %}
+
+            {% for m in medium %}
+            <a href="noticia/{{ m.noticia_id}}" id="preview-medium">
+                <span>keyword: {{m.keyword}}</span>
+                {% if m.thumbnail %}
+                <img src="{{m.thumbnail}}" onerror="this.src='{% static 'img/unavaible-img.webp' %}'"
+                    alt="Imagen Destacada" class="full-width">
+                {% else %}
+                <img src="{% static 'img/unavaible-img.webp' %}"
+                    alt="Imagen Destacada" class="full-width">
+                {% endif %}
+                <h1>{{ m.title }}</h1>
+                <p>{{ m.brief_summary }}</p>
+            </a>
+            {% endfor %}
+
+            {% for lo in low %}
+            <a href="noticia/{{lo.noticia_id}}" id="preview-low">
+                <span>keyword: {{lo.keyword}}</span>
+                {% if lo.thumbnail %}
+                <img src="{{lo.thumbnail}}" onerror="this.src='{% static 'img/unavaible-img.webp' %}'"
+                    alt="Imagen Destacada" class="full-width">
+                {% else %}
+                <img src="{% static 'img/unavaible-img.webp' %}"
+                    alt="Imagen Destacada" class="full-width">
+                {% endif %}
+                <h1>{{lo.title}}</h1>
+                <p>{{lo.brief_summary}}</p>
+            </a>
+            {% endfor %}
+
+        
+        </div>
+        <div id="footer">
+            <hr>
+            <p>
+                <b>{{num_articles}}</b> noticias capturadas
+            </p>
+            <p>
+                <b>{{num_keywords}}</b> keywords descifradas
+            </p>
+            <p>
+                <b>{{num_generated_articles}}</b> noticias generadas
+            </p>
+            <p>
+                <b>{{num_sources}}</b> numero de medios
+            </p>
+        </div>
+    </center>
+    <div class="area">
+        <ul class="circles">
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+    </div>
+
+</body>
+
+</html>

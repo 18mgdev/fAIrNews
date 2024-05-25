@@ -16,8 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-#from controller import funcionparamain, funcionparareader
+from web.controller import frontpage, noticia_reader
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('', frontpage),
+    path('noticia/<str:noticiaid>', noticia_reader),
 ]

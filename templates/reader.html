@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/bg.css' %}">
+    <link rel="stylesheet" href="{% static 'css/reader.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <title>Document</title>
+</head>
+<body class="area">
+
+
+  <div class="context">
+      <center>
+          <div id="header">
+            <a id="back" href="/">
+                <button>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 256 256"><path fill="rgb(51, 51, 51)" d="M224 88v80a16 16 0 0 1-16 16h-80v40a8 8 0 0 1-13.66 5.66l-96-96a8 8 0 0 1 0-11.32l96-96A8 8 0 0 1 128 32v40h80a16 16 0 0 1 16 16"/></svg>
+                </button>
+            </a>
+            <h1><a href="/">fAIrNews</a></h1>
+    <hr>
+    <p>{{date}}</p>
+        </div>
+
+    </center>
+  </div>
+
+<div id="main">
+    
+ <article>
+    <h1>{{title}}</h1>
+    <center>
+        {% if thumbnail %}
+        <img src="{{thumbnail}}"
+        onerror="this.src='{% static 'img/unavaible-img.webp' %}'"
+        alt="Imagen Destacada" class="full-width">
+        {% else %}
+        <img src="{% static 'img/unavaible-img.webp' %}" alt="Imagen Destacada" class="full-width">
+        {% endif %}
+</center>
+    <div class="text-columns">
+        {% for n in parrafos %}
+        <p>{{n.texto}}</p>
+
+        {% if n.link_media %}
+            {% if "image" in n.type_media  %}
+            <img src="{{n.link_media}}" onerror="this.style.display='none'" alt="Imagen" class="{{n.inline}}">
+            {% elif "video" in n.type_media %}
+            <video controls class="{{n.inline}}">
+                <source src="{{n.link_media}}" type="video/mp4">
+            </video>
+            {% endif %}
+        {% endif %}
+
+        {% endfor %}
+    </div>
+</article>
+</div>
+<div id="footer">
+    <hr>
+    <div id="references">
+        <b>REFERENCIAS</b>
+        
+        <p>
+            {% for r in references %}
+            <a href="{{r.link}}">{{r.source}}</a>
+            {% if not forloop.last %}
+             -
+            {% endif %}
+            {% endfor %}
+        </p>
+        
+    </div>
+ 
+</div>
+
+<div class="area" >
+        <ul class="circles">
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+        </ul>
+</div >
+
+</body>
+</html>

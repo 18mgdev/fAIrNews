@@ -1,6 +1,11 @@
+MIN_RELEVANCE_SUMMARY_GENERATION = 2
+
+import datetime
+start_time=datetime.datetime.now()
 #1 coger noticias
 from news_collector import get_all_news
-all_items=get_all_news()
+collector=get_all_news()
+all_items=collector["items"]
 import json
 print("num noticias: ",len(all_items))
 with open("pruebas/news.json", "w", encoding="utf-8") as f:
@@ -44,48 +49,52 @@ classified_news=get_classified_news_list(top_keywords, clustered_news, all_items
 
 
 
-
+#4 crea el json de las noticias resumidas
 from summarizer import summarize_headlines, summarize_articles
 
-
-def generate_summs_json(all_items:list, top_keywords:list, min_rank_keyword=3):
+def generate_summs_json(classification:list, top_keywords, min_rank_keyword=MIN_RELEVANCE_SUMMARY_GENERATION):
     """
     Genera lista de resumenes en formato JSON
     """
     final_summs = []
-    for keyword, rank in top_keywords:
-        if rank < min_rank_keyword:
-            break
+    for tema in classification:
         titles = []
         contents = []
         referencias=[]
         imagenes=[]
-        index=0
-        while index<len(all_items) and len(titles) < rank:
-            noticia = all_items[index]
-            if keyword in noticia["keywords"]: #dentro se mete la noticia
-                titles.append(noticia["title"])
-                contents.append(noticia["content"])
-                referencias.append({
-                    "title": noticia["title"],
-                    "link": noticia["link"],
-                    "source": noticia["medio"],
-                    "keywords": noticia["keywords"]
+        relevance=0
+        for k in top_keywords:
+            if k[0] == tema["keyword"]:
+                relevance=k[1]
+                break
+        if relevance<min_rank_keyword:
+            break
+        for noticia in tema["noticias"]:
+            titles.append(noticia["title"])
+            contents.append(noticia["content"])
+            referencias.append({
+                "title": noticia["title"],
+                "link": noticia["link"],
+                "source": noticia["medio"],
+                "keywords": noticia["keywords"]
+            })
+            if "enclosure" in noticia and noticia["enclosure"]!={} and "link" in noticia["enclosure"]:
+
+                imagenes.append({
+                    "link": noticia["enclosure"]["link"],
+                    "type": noticia["enclosure"]["type"] if "type" in noticia["enclosure"] else "image"
                 })
-                if "enclosure" in noticia and noticia["enclosure"]!={} and "link" in noticia["enclosure"]:
-                    imagenes.append({
-                        "link": noticia["enclosure"]["link"]
-                    })
-                elif "enclosure" in noticia and noticia["enclosure"]!={} and "thumbnail" in noticia["enclosure"]:
-                    imagenes.append({
-                        "link": noticia["enclosure"]["thumbnail"]
-                    })
-            index+=1
+            elif "enclosure" in noticia and noticia["enclosure"]!={} and "thumbnail" in noticia["enclosure"]:
+                imagenes.append({
+                    "link": noticia["enclosure"]["thumbnail"],
+                    "type": noticia["enclosure"]["type"] if "type" in noticia["enclosure"] else "image"
+                })
         #se monta el json y se añade a la lista final
+
         final_summs.append(
             {
-                "keyword": keyword,
-                "relevance": rank,
+                "keyword": tema["keyword"],
+                "relevance": relevance,
                 "title": summarize_headlines(titles).split(".")[0] if len(summarize_headlines(titles).split("."))>0 else summarize_headlines(titles),
                 "summary": summarize_articles(contents),
                 "references": referencias,
@@ -94,7 +103,17 @@ def generate_summs_json(all_items:list, top_keywords:list, min_rank_keyword=3):
             )
     return final_summs
  
-final_summs=generate_summs_json(all_items, top_keywords, min_rank_keyword=3)
+final_summs=generate_summs_json(classified_news, top_keywords)
+
+#5 insertar noticias en la base de datos
+from mongodb_functions import insertar_noticias
+insertar_noticias(
+    noticias=final_summs,
+    num_noticias_capturadas=len(all_items),
+    num_keywords=len(top_keywords),
+    num_medios=collector["num_medios"],
+    num_noticias_generadas=len(final_summs)
+                  )
 
 
-
+print(datetime.datetime.now()-start_time)
