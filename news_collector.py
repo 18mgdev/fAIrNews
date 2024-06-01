@@ -41,10 +41,3 @@ def get_all_news():
         
     return {"num_medios":count_medio, "items":all_items}
 
-
-
-
-#pruebas
-import json
-with open('news.json', 'w') as f:
-    json.dump(get_all_news(), f)
