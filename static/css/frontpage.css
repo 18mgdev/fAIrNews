@@ -40,11 +40,11 @@ div#main a:hover{
 
 #preview-medium h1{
     font-size: 1.7em;
-    text-align: justify;
+    text-align: left;
 }
 #preview-medium p{
     font-size: 16px;
-    text-align: justify;
+    text-align: left;
 }
 
 /*MEDIUM*/
@@ -53,10 +53,10 @@ div#main a:hover{
 }
 
 #preview-low h1{
-    text-align: justify;
+    text-align: left;
     font-size: 1.2em;
 }
 #preview-low p{
     font-size: 16px;
-    text-align: justify;
+    text-align: left;
 }

@@ -1,7 +1,5 @@
-from unittest import loader
-from django.http import HttpResponse, HttpRequest
+from django.http import  HttpRequest
 from django.shortcuts import render
-from django.template import loader
 
 from mongodb_functions import get_ultima_portada, get_noticia
 import re
@@ -74,6 +72,7 @@ def noticia_reader(request: HttpRequest, noticiaid: str):
     # Renderizar el template
     return render(request, READER_NAME, context)
 
+
 def dividir_en_parrafos(texto, num_frases=4):
     # Dividir el texto en frases utilizando expresiones regulares
     frases = re.split(r'(?<=[.!?]) +', texto)
@@ -101,7 +100,6 @@ def truncar_texto(texto, num_words=20):
         return ' '.join(palabras[:num_words])
 
 def get_random_link_media(lista):
-    print(lista)
     if not lista:
         return ""
     

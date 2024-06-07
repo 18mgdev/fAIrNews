@@ -78,6 +78,9 @@ def generate_summs_json(classification:list, top_keywords, min_rank_keyword=MIN_
     return final_summs
  
 final_summs=generate_summs_json(classified_news, top_keywords)
+import json
+with open("news.json", "w", encoding="utf-8") as f:
+    json.dump(final_summs, f, indent=4, ensure_ascii=False)
 
 #5 insertar noticias en la base de datos
 from mongodb_functions import insertar_noticias
