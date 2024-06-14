@@ -12,7 +12,11 @@ def frontpage(request: HttpRequest):
     """
     Renderiza la página principal
     """
+    import datetime
+    start_time=datetime.datetime.now()
     content = get_ultima_portada()
+    print("Tiempo de fetch de portada:",datetime.datetime.now()-start_time)
+    start_time=datetime.datetime.now()
     phigh=[]
     pmedium=[]
     plow=[]
@@ -38,6 +42,7 @@ def frontpage(request: HttpRequest):
         "medium": pmedium,
         "low": plow
     }
+    print("Tiempo de creacion de contexto:",datetime.datetime.now()-start_time)
 
     # Renderizar el template
     return render(request, INDEX_NAME, context)
