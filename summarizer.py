@@ -59,9 +59,9 @@ def get_num_tokens(text):
 
 def generate_summary(text, max_tokens):
   while get_num_tokens(text)>max_tokens:
-    print("tokens actuales:", get_num_tokens(text))
+    #print("tokens actuales:", get_num_tokens(text))
     ml=min(512,int(get_num_tokens(text)*0.7))
-    print("ml->", ml)
+    #print("ml->", ml)
     aux=""
     chunks = split_text(text, max_chunk_size=ml)
     for chunk in chunks:
@@ -117,15 +117,3 @@ def summarize_headlines(titulares:list):
     summary_in_spanish = en_es_translator(summary_in_english)[0]['translation_text']
     return summary_in_spanish
 
-"""
-def summarize_headlines(titulares:list):
-    inputs = tokenizer(titulares, return_tensors="pt", truncation=True, padding="max_length")
-    input_ids = inputs.input_ids
-    attention_mask = inputs.attention_mask
-
-    outputs = model.generate(input_ids=input_ids, attention_mask=attention_mask, max_length=40, min_length=20, num_beams=4, early_stopping=True)
-    summary = tokenizer.decode(outputs[0], skip_special_tokens=True)
-
-    return summary
-
-"""
