@@ -40,4 +40,3 @@ def get_all_news():
     add_news(sm_lavozdegalicia.get_news_list())
         
     return {"num_medios":count_medio, "items":all_items}
-

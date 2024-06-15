@@ -6,6 +6,7 @@ start_time=datetime.datetime.now()
 from news_collector import get_all_news
 collector=get_all_news()
 all_items=collector["items"]
+print(len(all_items))
 
 
 
@@ -22,6 +23,9 @@ top_keywords = generate_top_keywords(all_items, num_topics=NUM_GENERATED_KEYWORD
 
 #3 crear lista de noticias agrupadas por keywords y clusters
 classified_news=get_classified_news_list(top_keywords, clustered_news, all_items)
+
+for e in top_keywords:
+    print(e)
 
 #4 crea el json de las noticias resumidas
 from summarizer import generate_summary_from_list,summarize_headlines
