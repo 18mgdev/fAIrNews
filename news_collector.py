@@ -1,12 +1,20 @@
-import sys
-import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'news_sources')))
+NEWS_SOURCES=[
+    {"name":"20minutos", "rss_url":"https://www.20minutos.es/rss"},
+    {"name":"ABC", "rss_url":"https://www.abc.es/rss/2.0/portada/"},
+    {"name":"COPE", "rss_url":"https://www.cope.es/api/es/news/rss.xml"},
+    {"name":"ElConfidencial", "rss_url":"https://rss.elconfidencial.com/espana/"},
+    {"name":"LaSexta", "rss_url":"https://www.lasexta.com/rss/351410.xml"},
+    {"name":"ElDiario", "rss_url":"https://www.eldiario.es/rss/"},
+    {"name":"ElCorreo", "rss_url":"https://www.elcorreo.com/rss/2.0/portada/"},
+    {"name":"ElMundo", "rss_url":"https://e00-elmundo.uecdn.es/elmundo/rss/portada.xml"},
+    {"name":"ElPais", "rss_url":"https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada"},
+    {"name":"ElPeriodico", "rss_url":"https://www.elperiodico.com/es/rss/rss_portada.xml"},
+    {"name":"LaVanguardia", "rss_url":"https://www.lavanguardia.com/rss/home.xml"},
+    {"name":"LaVozDeGalicia", "rss_url":"https://www.lavozdegalicia.es/index.xml"}
+]
 
 
-from news_sources import m_20minutos, m_abc, m_cope, m_elconfidencial, m_lasexta, m_eldiario
-from news_sources import sm_elcorreo, sm_elmundo,sm_elpais,sm_elperiodico,sm_lavanguardia,sm_lavozdegalicia
-
-def get_all_news():
+def get_all_news(limit:int):
     """
     Devuelve una lista de rss JSONs con todas las noticias de todos los medios de '/news_sources'
     """
@@ -26,17 +34,27 @@ def get_all_news():
                 all_items.append(e)
                 seen_titles.add(e["title"])
     
-    add_news(m_20minutos.get_news_list())
-    add_news(m_abc.get_news_list())
-    add_news(m_cope.get_news_list())
-    add_news(m_elconfidencial.get_news_list())
-    add_news(m_lasexta.get_news_list())
-    add_news(m_eldiario.get_news_list())
-    add_news(sm_elcorreo.get_news_list())
-    add_news(sm_elmundo.get_news_list())
-    add_news(sm_elpais.get_news_list())
-    add_news(sm_elperiodico.get_news_list())
-    add_news(sm_lavanguardia.get_news_list())
-    add_news(sm_lavozdegalicia.get_news_list())
+    for e in NEWS_SOURCES:
+        add_news(get_news_list(e["rss_url"], e["name"], limit))
+
         
     return {"num_medios":count_medio, "items":all_items}
+
+
+import text_cleaner as f
+import rss2json as r2j
+
+def get_news_list(rss_url:str,source_name:str, limit):
+    """
+    Get news from rss_url and return it as a JSON OBJECT list
+    """
+    items = r2j.get_JSON(rss_url, items_limit=limit)
+    for e in items:
+        e["medio"]=source_name
+        e["title"]=f.rss_clean_html(e["title"])
+        content=str(e["content"])
+        content=content.replace("Leer</a>","</a>")
+        content=content.replace("Seguir leyendo...","")
+        content=content.replace("Seguir leyendo","")
+        e["content"]=f.rss_clean_html(content)
+    return items

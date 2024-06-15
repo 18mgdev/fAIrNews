@@ -20,6 +20,8 @@ def rss_clean_html(html_content):
     
     # Opcional: limpiar espacios extra y saltos de línea
     text = ' '.join(text.split())
+    if len(text)>0 and text[-1] != ".":
+        text += "."
     
     return text
 

@@ -1,10 +1,10 @@
-from app_config import NUM_GENERATED_KEYWORDS, MIN_RELEVANCE_SUMMARY_GENERATION, SHOW_SILHOUETTE_GRAPH, WAIT_TIME
+from app_config import NUM_GENERATED_KEYWORDS, MIN_RELEVANCE_SUMMARY_GENERATION, SHOW_SILHOUETTE_GRAPH, WAIT_TIME, COLLECTED_NEWS_LIMIT
 
 import datetime
 start_time=datetime.datetime.now()
 #1 coger noticias
 from news_collector import get_all_news
-collector=get_all_news()
+collector=get_all_news(COLLECTED_NEWS_LIMIT)
 all_items=collector["items"]
 print(len(all_items))
 
@@ -24,8 +24,22 @@ top_keywords = generate_top_keywords(all_items, num_topics=NUM_GENERATED_KEYWORD
 #3 crear lista de noticias agrupadas por keywords y clusters
 classified_news=get_classified_news_list(top_keywords, clustered_news, all_items)
 
-for e in top_keywords:
-    print(e)
+
+print(top_keywords[0])
+print(top_keywords[1])
+print(top_keywords[2])
+print(top_keywords[3])
+print(top_keywords[4])
+print(top_keywords[5])
+print(top_keywords[6])
+print(top_keywords[7])
+print(top_keywords[8])
+print(top_keywords[9])
+print(top_keywords[10])
+print(top_keywords[11])
+print(top_keywords[12])
+print(top_keywords[13])
+print(top_keywords[14])
 
 #4 crea el json de las noticias resumidas
 from summarizer import generate_summary_from_list,summarize_headlines
