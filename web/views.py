@@ -1,7 +1,5 @@
-from unittest import loader
-from django.http import HttpResponse, HttpRequest
+from django.http import  HttpRequest
 from django.shortcuts import render
-from django.template import loader
 
 from mongodb_functions import get_ultima_portada, get_noticia
 import re
@@ -14,7 +12,11 @@ def frontpage(request: HttpRequest):
     """
     Renderiza la página principal
     """
+    import datetime
+    start_time=datetime.datetime.now()
     content = get_ultima_portada()
+    print("Tiempo de fetch de portada:",datetime.datetime.now()-start_time)
+    start_time=datetime.datetime.now()
     phigh=[]
     pmedium=[]
     plow=[]
@@ -40,6 +42,7 @@ def frontpage(request: HttpRequest):
         "medium": pmedium,
         "low": plow
     }
+    print("Tiempo de creacion de contexto:",datetime.datetime.now()-start_time)
 
     # Renderizar el template
     return render(request, INDEX_NAME, context)
@@ -74,6 +77,7 @@ def noticia_reader(request: HttpRequest, noticiaid: str):
     # Renderizar el template
     return render(request, READER_NAME, context)
 
+
 def dividir_en_parrafos(texto, num_frases=4):
     # Dividir el texto en frases utilizando expresiones regulares
     frases = re.split(r'(?<=[.!?]) +', texto)
@@ -101,7 +105,6 @@ def truncar_texto(texto, num_words=20):
         return ' '.join(palabras[:num_words])
 
 def get_random_link_media(lista):
-    print(lista)
     if not lista:
         return ""
     
