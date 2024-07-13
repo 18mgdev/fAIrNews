@@ -21,3 +21,18 @@ El análisis de contenido y la generación de resúmenes en este proyecto se rea
 La implementación de este sistema se realiza en Python, utilizando el framework web Django, lo que asegura una plataforma robusta y escalable. Además, para la persistencia de las noticias generadas, se utiliza el servicio ‘MongoDB Atlas’, una solución de base de datos en la nube que ofrece alta disponibilidad y flexibilidad, facilitando la gestión eficiente de grandes volúmenes de datos y su escalabilidad.
 
  
+#### Dependencias
+
+```shell
+pip install transformers
+pip install nltk
+pip install feedparser
+pip install pymongo
+pip install django
+pip install scikit-learn
+pip install sentence_transformers
+pip install sentencepiece
+pip install matplotlib
+pip install spacy
+python -m spacy download es_core_news_sm
+```
