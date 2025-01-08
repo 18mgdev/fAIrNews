@@ -1,0 +1,11 @@
+pip install transformers
+pip install nltk
+pip install feedparser
+pip install pymongo
+pip install django
+pip install scikit-learn
+pip install sentence_transformers
+pip install sentencepiece
+pip install matplotlib
+pip install spacy
+python -m spacy download es_core_news_sm
