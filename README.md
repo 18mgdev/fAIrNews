@@ -19,8 +19,8 @@ Este proyecto es un sistema automatizado que recoge, agrupa y sintetiza noticias
 ## ⚙️ Instalación
 Instrucciones para configurar el entorno local:
 ```bash
-git clone https://github.com/tu-usuario/tu-repositorio.git
-cd tu-repositorio
+git clone https://github.com/18mgdev/fAIrNews.git
+cd tfAIrNews
 pip install -r requirements.txt
 python manage.py runserver
 ```
