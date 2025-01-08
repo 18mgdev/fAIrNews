@@ -49,10 +49,12 @@ Asegúrate de tener ambas partes del sistema ejecutándose para poder utilizar t
 
 Para ver el sistema en acción, echa un vistazo al siguiente video de demostración. El video proporciona una visión clara de cómo funciona el sistema y muestra tanto la aplicación de generación de resúmenes como la interfaz de usuario de la aplicación web en funcionamiento.
 
-<iframe width="500" height="250" src="https://www.youtube.com/watch?v=CEnqBGE3mJY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="1"></iframe>
+Haciendo click en la imagen te redigirá a Youtube.
+
+[![Demostración fAIrNews](http://img.youtube.com/vi/CEnqBGE3mJY/0.jpg)](http://www.youtube.com/watch?v=CEnqBGE3mJY "Demostración del Sistema")
+
+## 🙋🏼‍♂️ Autor
+- Miguel González - fAIrNews (Trabajo de Fin de Grado de Ingeniería del Software UPM) - [18mgdev](https://github.com/18mgdev)
 
 ## 📄 Licencia
 [MIT](./LICENSE)
-
-## 👤 Autor
-- Miguel González - fAIrNews (Trabajo de Fin de Grado de Ingeniería del Software UPM) - [18mgdev](https://github.com/18mgdev)
